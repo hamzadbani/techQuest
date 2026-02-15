@@ -33,100 +33,95 @@ const ContributionForm: React.FC<ContributionFormProps> = ({ onBack }) => {
 
     if (isSuccess) {
         return (
-            <div className="glass animate-fade-in" style={{ padding: '60px', margin: '40px auto', maxWidth: '600px', textAlign: 'center' }}>
-                <div style={{ fontSize: '4rem', marginBottom: '20px' }}>⭐</div>
-                <h2 style={{ color: 'var(--primary)', marginBottom: '20px' }}>Thank You, Pioneer!</h2>
-                <p style={{ marginBottom: '30px', color: 'var(--text-muted)' }}>
-                    Your interview experience has been saved to our database. This will help hundreds of other developers prepare better.
+            <div className="glass animate-fade-in" style={{ padding: '80px 60px', margin: '40px auto', maxWidth: '700px', textAlign: 'center', border: '1px solid var(--primary)' }}>
+                <div style={{ fontSize: '5rem', marginBottom: '30px' }}>💎</div>
+                <h2 style={{ fontSize: '2.5rem', marginBottom: '20px' }}>Contribution Received</h2>
+                <p style={{ marginBottom: '40px', fontSize: '1.1rem', color: 'var(--text-muted)', lineHeight: '1.6' }}>
+                    Your technical insights have been submitted for review. Once approved, they will be immortalized in our community pool to help fellow engineers.
                 </p>
-                <button className="btn-primary" onClick={onBack}>Back to Home</button>
+                <button className="btn-primary" onClick={onBack} style={{ padding: '16px 40px' }}>Return to HQ</button>
             </div>
         );
     }
 
     return (
-        <div className="glass animate-fade-in" style={{ padding: '40px', margin: '20px auto', maxWidth: '800px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                <h2 style={{ margin: 0 }}>Share Your Experience</h2>
-                <button onClick={onBack} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>Cancel</button>
+        <div className="glass animate-fade-in" style={{ padding: '60px', margin: '20px auto', maxWidth: '850px', border: '1px solid var(--glass-border)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
+                <h2 style={{ fontSize: '2rem', margin: 0 }}>Share Personal Experience</h2>
+                <button onClick={onBack} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontWeight: '500' }}>Discard</button>
             </div>
 
-            <p style={{ color: 'var(--text-muted)', marginBottom: '30px' }}>
-                Had a tough question in an interview? Paste it here! We'll add it to the community pool.
+            <p style={{ color: 'var(--text-muted)', marginBottom: '40px', fontSize: '1.1rem' }}>
+                Help us expand the boundary of technical preparation. Contribute a scenario you faced in the field.
             </p>
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px' }}>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 200px', gap: '25px' }}>
                     <div className="form-group">
-                        <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-muted)', fontSize: '0.9rem' }}>Title (Short summary)</label>
+                        <label style={{ display: 'block', marginBottom: '10px', color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Submission Title</label>
                         <input
                             type="text"
-                            className="glass"
                             required
-                            placeholder="e.g. Java Streams vs Parallel Streams"
+                            placeholder="e.g. Distributed Lock Strategy in Spring"
                             value={formData.title}
                             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                            style={{ width: '100%', padding: '12px', border: '1px solid var(--glass-border)', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', color: 'white' }}
+                            style={{ width: '100%', padding: '14px', border: '1px solid var(--glass-border)', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', color: 'white', fontSize: '1rem' }}
                         />
                     </div>
                     <div className="form-group">
-                        <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-muted)', fontSize: '0.9rem' }}>Level</label>
+                        <label style={{ display: 'block', marginBottom: '10px', color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Target Level</label>
                         <select
-                            className="glass"
                             value={formData.level}
                             onChange={(e) => setFormData({ ...formData, level: e.target.value })}
-                            style={{ width: '100%', padding: '12px', border: '1px solid var(--glass-border)', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', color: 'white' }}
+                            style={{ width: '100%', padding: '14px', border: '1px solid var(--glass-border)', borderRadius: '12px', background: '#111', color: 'white', fontSize: '1rem' }}
                         >
-                            <option value="junior" style={{ background: '#151518', color: 'white' }}>Junior</option>
-                            <option value="intermediate" style={{ background: '#151518', color: 'white' }}>Intermediate</option>
-                            <option value="senior" style={{ background: '#151518', color: 'white' }}>Senior</option>
+                            <option value="junior">Junior</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="senior">Senior Staff</option>
                         </select>
                     </div>
                 </div>
 
                 <div className="form-group">
-                    <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-muted)', fontSize: '0.9rem' }}>The Question / Scenario</label>
+                    <label style={{ display: 'block', marginBottom: '10px', color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em' }}>The Challenge Details</label>
                     <textarea
-                        className="glass"
                         required
-                        placeholder="Describe what the interviewer asked..."
+                        placeholder="Detailed technical scenario or question context..."
                         value={formData.description}
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        style={{ width: '100%', height: '150px', padding: '12px', border: '1px solid var(--glass-border)', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', color: 'white', resize: 'none' }}
+                        style={{ width: '100%', height: '180px', padding: '16px', border: '1px solid var(--glass-border)', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', color: 'white', resize: 'vertical', fontSize: '1rem', lineHeight: '1.6' }}
                     />
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px' }}>
                     <div className="form-group">
-                        <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-muted)', fontSize: '0.9rem' }}>Category</label>
+                        <label style={{ display: 'block', marginBottom: '10px', color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Concept Category</label>
                         <input
                             type="text"
-                            className="glass"
-                            placeholder="e.g. Spring Boot, Design Patterns"
+                            placeholder="e.g. Microservices, Concurrency"
                             value={formData.category}
                             onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                            style={{ width: '100%', padding: '12px', border: '1px solid var(--glass-border)', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', color: 'white' }}
+                            style={{ width: '100%', padding: '14px', border: '1px solid var(--glass-border)', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', color: 'white', fontSize: '1rem' }}
                         />
                     </div>
                     <div className="form-group">
-                        <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-muted)', fontSize: '0.9rem' }}>Format</label>
+                        <label style={{ display: 'block', marginBottom: '10px', color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Interaction Format</label>
                         <select
-                            className="glass"
                             value={formData.type}
                             onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                            style={{ width: '100%', padding: '12px', border: '1px solid var(--glass-border)', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', color: 'white' }}
+                            style={{ width: '100%', padding: '14px', border: '1px solid var(--glass-border)', borderRadius: '12px', background: '#111', color: 'white', fontSize: '1rem' }}
                         >
-                            <option value="explanation" style={{ background: '#151518', color: 'white' }}>Conceptual Explanation</option>
-                            <option value="refactor" style={{ background: '#151518', color: 'white' }}>Live Coding / Refactoring</option>
+                            <option value="explanation">Architectural Discourse</option>
+                            <option value="refactor">Technical Refactoring</option>
                         </select>
                     </div>
                 </div>
 
-                {error && <div style={{ color: '#ef4444', fontSize: '0.9rem' }}>{error}</div>}
+                {error && <div style={{ color: '#ef4444', fontSize: '0.9rem', textAlign: 'center' }}>{error}</div>}
 
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
-                    <button type="submit" className="btn-primary" disabled={isSubmitting} style={{ padding: '12px 40px' }}>
-                        {isSubmitting ? 'Submitting...' : 'Submit to Database'}
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                    <button type="submit" className="btn-primary" disabled={isSubmitting} style={{ padding: '16px 80px', fontSize: '1.1rem' }}>
+                        {isSubmitting ? 'Verifying...' : 'Submit Contribution'}
                     </button>
                 </div>
             </form>

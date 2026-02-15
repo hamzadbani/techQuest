@@ -4,6 +4,11 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const Challenge = require('./models/Challenge');
+const Blog = require('./models/Blog');
+
+
+
+
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -21,6 +26,63 @@ mongoose.connect(mongoUri)
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 // API Routes
+
+// BLOG ROUTES
+
+// Public: Get all blogs
+app.get('/api/blogs', async (req, res) => {
+    try {
+        const blogs = await Blog.find({ status: 'published' }).sort({ publishedAt: -1 });
+        res.json(blogs);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Public: Get single blog by slug
+app.get('/api/blogs/:slug', async (req, res) => {
+    try {
+        const blog = await Blog.findOne({ slug: req.params.slug, status: 'published' });
+        if (!blog) return res.status(404).json({ error: "Blog not found" });
+        res.json(blog);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Admin: Create/Update blog
+app.post('/api/admin/blogs', async (req, res) => {
+    try {
+        const { title, subtitle, content, category, status } = req.body;
+
+        // Simple read time calculation: words / 200
+        const wordCount = content.split(/\s+/).length;
+        const readTime = Math.max(1, Math.ceil(wordCount / 200));
+
+        const slug = title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+
+        const blog = await Blog.findOneAndUpdate(
+            { slug },
+            { title, subtitle, content, category, status, readTime, slug, publishedAt: new Date() },
+            { upsert: true, new: true }
+        );
+
+        res.json(blog);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Admin: Delete blog
+app.delete('/api/admin/blogs/:id', async (req, res) => {
+    try {
+        await Blog.findByIdAndDelete(req.params.id);
+        res.json({ message: "Blog deleted" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Helper to seed from AI
 async function seedFromAI(level, category = "Java & Spring Boot", count = 5) {
     console.log(`Organic Growth: Seeding ${count} more ${level} questions...`);

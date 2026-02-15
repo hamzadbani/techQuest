@@ -51,6 +51,40 @@ export async function adminLogin(password: string) {
     }
 }
 
+export async function fetchBlogs() {
+    try {
+        const response = await fetch('http://localhost:5000/api/blogs');
+        return await response.json();
+    } catch (error) {
+        console.error('Error:', error);
+        return [];
+    }
+}
+
+export async function fetchBlogBySlug(slug: string) {
+    try {
+        const response = await fetch(`http://localhost:5000/api/blogs/${slug}`);
+        return await response.json();
+    } catch (error) {
+        console.error('Error:', error);
+        return null;
+    }
+}
+
+export async function saveBlog(blogData: any) {
+    try {
+        const response = await fetch('http://localhost:5000/api/admin/blogs', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(blogData),
+        });
+        return await response.json();
+    } catch (error) {
+        console.error('Error:', error);
+        return null;
+    }
+}
+
 export async function submitChallenge(challengeData: any) {
     try {
         const response = await fetch('http://localhost:5000/api/challenges/contribute', {

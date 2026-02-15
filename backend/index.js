@@ -48,7 +48,8 @@ app.get('/api/challenges', async (req, res) => {
 
     try {
         const matchStage = {
-            level: level.toLowerCase()
+            level: level.toLowerCase(),
+            status: { $in: ['approved', null, undefined] } // Allow approved or legacy missing status
         };
 
         if (excludedIds.length > 0) {
@@ -85,6 +86,47 @@ app.get('/api/status', async (req, res) => {
             database: mongoose.connection.name,
             sample: sample ? { level: sample.level, title: sample.title } : 'null'
         });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ADMIN ROUTES
+
+// Login / Verify passcode
+app.post('/api/admin/login', (req, res) => {
+    const { password } = req.body;
+    if (password === process.env.ADMIN_PASSWORD) {
+        res.json({ success: true, message: "Welcome back, Admin." });
+    } else {
+        res.status(401).json({ success: false, message: "Incorrent passcode." });
+    }
+});
+
+// Community Contribution Route
+app.post('/api/challenges/contribute', async (req, res) => {
+    try {
+        const { title, description, level, category, type } = req.body;
+
+        // Basic validation
+        if (!title || !description || !level) {
+            return res.status(400).json({ error: "Missing required fields" });
+        }
+
+        const newChallenge = new Challenge({
+            id: `user-contrib-${Date.now()}`,
+            title,
+            description,
+            level: level.toLowerCase(),
+            status: 'pending', // NEW contributions start as pending
+            category: category || "General",
+            type: type || "explanation",
+            concepts: [], // Users don't provide these, AI or admin will fill later
+            learningContent: "Awaiting community or AI review."
+        });
+
+        await newChallenge.save();
+        res.status(201).json({ message: "Contribution received! Thank you for helping the community.", challenge: newChallenge });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

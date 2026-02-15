@@ -91,3 +91,8 @@ p {
 .animate-fade-in {
   animation: fadeIn 0.8s ease-out forwards;
 }
+
+option {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+}

@@ -11,3 +11,59 @@ export async function fetchChallenges(level: string, count: number = 20, exclude
         return [];
     }
 }
+
+export async function fetchPendingChallenges() {
+    try {
+        const response = await fetch('http://localhost:5000/api/admin/pending');
+        if (!response.ok) throw new Error('Failed to fetch pending');
+        return await response.json();
+    } catch (error) {
+        console.error('Error:', error);
+        return [];
+    }
+}
+
+export async function approveChallenge(id: string, updates: any) {
+    try {
+        const response = await fetch(`http://localhost:5000/api/admin/approve/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updates),
+        });
+        return await response.json();
+    } catch (error) {
+        console.error('Error:', error);
+        return null;
+    }
+}
+
+export async function adminLogin(password: string) {
+    try {
+        const response = await fetch('http://localhost:5000/api/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password }),
+        });
+        return await response.json();
+    } catch (error) {
+        console.error('Error:', error);
+        return { success: false };
+    }
+}
+
+export async function submitChallenge(challengeData: any) {
+    try {
+        const response = await fetch('http://localhost:5000/api/challenges/contribute', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(challengeData),
+        });
+        if (!response.ok) throw new Error('Failed to submit challenge');
+        return await response.json();
+    } catch (error) {
+        console.error('Error submitting challenge:', error);
+        return null;
+    }
+}

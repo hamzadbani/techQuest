@@ -9,6 +9,7 @@ const challengeSchema = new mongoose.Schema({
     type: { type: String, enum: ['explanation', 'refactor'], required: true },
     initialCode: { type: String },
     expectedCode: { type: String },
+    status: { type: String, enum: ['pending', 'approved'], default: 'approved' },
     concepts: [{ type: String }],
     learningContent: { type: String }
 }, { timestamps: true });

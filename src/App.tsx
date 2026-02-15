@@ -1,21 +1,103 @@
 import React, { useState } from 'react';
 import './index.css';
 import Platform from './components/Platform';
+import ContributionForm from './components/ContributionForm';
+import AdminPanel from './components/AdminPanel';
+
+import { adminLogin } from './services/apiService';
 
 const App: React.FC = () => {
-  const [view, setView] = useState<'landing' | 'platform'>('landing');
+  const [view, setView] = useState<'landing' | 'platform' | 'contribute' | 'admin' | 'admin-auth'>('landing');
   const [selectedLevel, setSelectedLevel] = useState<string>('junior');
-
+  const [logoClicks, setLogoClicks] = useState(0);
+  const [adminPass, setAdminPass] = useState('');
+  const [error, setError] = useState('');
   const startChallenge = (level: string) => {
     setSelectedLevel(level);
     setView('platform');
   };
 
+  const handleLogoClick = () => {
+    const newCount = logoClicks + 1;
+    if (newCount === 5) {
+      setView('admin-auth');
+      setLogoClicks(0);
+    } else {
+      setLogoClicks(newCount);
+      // Reset if they wait too long (3s)
+      setTimeout(() => setLogoClicks(0), 3000);
+    }
+  };
+
+  const handleAdminLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const result = await adminLogin(adminPass);
+    if (result.success) {
+      setView('admin');
+      setError('');
+    } else {
+      setError('Invalid passcode');
+    }
+  };
+
+  if (view === 'admin-auth') {
+    return (
+      <div className="app-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div className="glass animate-fade-in" style={{ padding: '40px', width: '400px', textAlign: 'center' }}>
+          <h2 style={{ marginBottom: '20px' }}>Admin Entrance</h2>
+          <form onSubmit={handleAdminLogin}>
+            <input
+              type="password"
+              autoFocus
+              className="glass"
+              placeholder="Passcode..."
+              value={adminPass}
+              onChange={(e) => setAdminPass(e.target.value)}
+              style={{ width: '100%', padding: '12px', marginBottom: '15px', background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid var(--glass-border)', textAlign: 'center' }}
+            />
+            {error && <p style={{ color: '#ef4444', marginBottom: '15px' }}>{error}</p>}
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button type="button" onClick={() => setView('landing')} style={{ flex: 1, background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>Cancel</button>
+              <button type="submit" className="btn-primary" style={{ flex: 2 }}>Enter</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    )
+  }
+
+  if (view === 'admin') {
+    return (
+      <div className="app-container">
+        <nav className="glass" style={{ margin: '20px', padding: '15px 30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ cursor: 'pointer', fontSize: '1.5rem', fontWeight: 'bold', background: 'linear-gradient(to right, #6366f1, #a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }} onClick={() => setView('landing')}>
+            TechQuest
+          </div>
+          <div style={{ color: 'var(--secondary)', fontWeight: 'bold' }}>Admin Control</div>
+        </nav>
+        <AdminPanel onBack={() => setView('landing')} />
+      </div>
+    );
+  }
+
+  if (view === 'contribute') {
+    return (
+      <div className="app-container">
+        <nav className="glass" style={{ margin: '20px', padding: '15px 30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ cursor: 'pointer', fontSize: '1.5rem', fontWeight: 'bold', background: 'linear-gradient(to right, #6366f1, #a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }} onClick={() => setView('landing')}>
+            TechQuest
+          </div>
+        </nav>
+        <ContributionForm onBack={() => setView('landing')} />
+      </div>
+    );
+  }
+
   if (view === 'platform') {
     return (
       <div className="app-container">
         <nav className="glass" style={{ margin: '20px', padding: '15px 30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ fontSize: '1.5rem', fontWeight: 'bold', background: 'linear-gradient(to right, #6366f1, #a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          <div style={{ cursor: 'pointer', fontSize: '1.5rem', fontWeight: 'bold', background: 'linear-gradient(to right, #6366f1, #a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }} onClick={() => setView('landing')}>
             TechQuest
           </div>
           <div style={{ color: 'var(--text-muted)' }}>Session: Java {selectedLevel.toUpperCase()}</div>
@@ -28,13 +110,16 @@ const App: React.FC = () => {
   return (
     <div className="app-container">
       <nav className="glass" style={{ margin: '20px', padding: '15px 30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ fontSize: '1.5rem', fontWeight: 'bold', background: 'linear-gradient(to right, #6366f1, #a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+        <div
+          style={{ cursor: 'pointer', fontSize: '1.5rem', fontWeight: 'bold', background: 'linear-gradient(to right, #6366f1, #a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+          onClick={handleLogoClick}
+        >
           TechQuest
         </div>
         <div style={{ display: 'flex', gap: '30px', fontWeight: '500' }}>
-          <a href="#" style={{ color: 'var(--text-main)', textDecoration: 'none' }}>Home</a>
-          <a href="#" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>Challenges</a>
-          <a href="#" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>Pricing</a>
+          <button onClick={() => setView('landing')} style={{ background: 'none', border: 'none', color: 'var(--text-main)', cursor: 'pointer', fontSize: '1rem' }}>Home</button>
+          <button onClick={() => setView('contribute')} style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontSize: '1rem', fontWeight: 'bold' }}>Contribute</button>
+          <button style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1rem' }}>Pricing</button>
         </div>
       </nav>
 
